@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advisor Chat Practice · Nebula Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400;1,600&family=Questrial&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0c1118;--navy2:#141d2b;
+  --cream:#f0ebe0;--cream-70:rgba(240,235,224,.70);--cream-40:rgba(240,235,224,.40);
+  --cream-18:rgba(240,235,224,.18);--cream-10:rgba(240,235,224,.10);--cream-06:rgba(240,235,224,.06);
+  --purple:#7B6FE8;--purple-l:rgba(123,111,232,.18);
+  --coral:#E8604C;--green:#6FFFB0;--lavender:#b89cf7;--gold:#FFD54F;--magenta:#E040FB;--cyan:#4FC3F7;
+}
+html,body{height:100%;overflow:hidden;background:var(--navy)}
+body{font-family:'Questrial',sans-serif;font-size:15px;line-height:1.65;color:var(--cream)}
+h1,h2,h3{font-family:'Lora',serif}
+
+.screen{display:none;width:100vw;height:100vh}
+.screen.active{display:flex}
+
+/* ── SELECT ── */
+#screen-select{
+  flex-direction:column;align-items:center;justify-content:center;
+  background:linear-gradient(160deg,#0c1118,#141d2b);
+  position:relative;overflow:hidden;padding:24px;
+}
+#screen-select::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    radial-gradient(1px 1px at 12% 18%,rgba(184,156,247,.5) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 38% 7%,rgba(123,111,232,.4) 0%,transparent 100%),
+    radial-gradient(1px 1px at 67% 14%,rgba(184,156,247,.4) 0%,transparent 100%),
+    radial-gradient(1px 1px at 82% 32%,rgba(123,111,232,.3) 0%,transparent 100%),
+    radial-gradient(1px 1px at 22% 68%,rgba(184,156,247,.3) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 55% 78%,rgba(123,111,232,.38) 0%,transparent 100%),
+    radial-gradient(1px 1px at 4% 43%,rgba(123,111,232,.28) 0%,transparent 100%),
+    radial-gradient(1px 1px at 44% 52%,rgba(184,156,247,.15) 0%,transparent 100%);
+}
+.select-inner{position:relative;z-index:1;width:100%;max-width:700px}
+.select-eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--purple);margin-bottom:12px;display:block}
+.select-title{font-size:clamp(2rem,5vw,3.2rem);font-weight:600;font-style:italic;color:var(--cream);margin-bottom:8px;line-height:1.15}
+.select-sub{font-size:14px;color:var(--cream-70);margin-bottom:28px;max-width:480px}
+.user-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:12px;margin-bottom:20px}
+.user-card{
+  background:var(--cream-06);border:1px solid var(--cream-10);border-radius:14px;
+  padding:18px 16px;cursor:pointer;transition:all .2s;text-align:left;position:relative;
+}
+.user-card:hover{border-color:var(--purple);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.user-card.sel{border-color:var(--purple);background:var(--purple-l)}
+.uc-type{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--purple);margin-bottom:8px}
+.uc-name{font-family:'Lora',serif;font-size:1.2rem;font-style:italic;color:var(--cream);margin-bottom:4px}
+.uc-desc{font-size:12px;color:var(--cream-40);line-height:1.5}
+.uc-level{position:absolute;top:12px;right:12px;font-size:9px;letter-spacing:1px;text-transform:uppercase;
+  padding:3px 8px;border-radius:20px;background:rgba(123,111,232,.15);border:1px solid rgba(123,111,232,.3);color:var(--lavender)}
+.start-btn{
+  width:100%;padding:15px;border:none;border-radius:40px;
+  background:linear-gradient(135deg,var(--purple),#9b8ffa);
+  color:white;font-family:'Lora',serif;font-size:1rem;font-weight:600;font-style:italic;
+  cursor:pointer;transition:opacity .2s,transform .15s;box-shadow:0 4px 20px rgba(123,111,232,.4);
+}
+.start-btn:hover{opacity:.9;transform:translateY(-1px)}
+.start-btn:disabled{opacity:.3;cursor:not-allowed;transform:none}
+
+/* ── CHAT ── */
+#screen-chat{flex-direction:row;height:100vh}
+#chat-panel{flex:1;display:flex;flex-direction:column;min-width:0;background:var(--navy)}
+#chat-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 22px;border-bottom:1px solid var(--cream-10);
+  background:rgba(12,17,24,.9);backdrop-filter:blur(12px);flex-shrink:0;
+}
+.hdr-left{display:flex;align-items:center;gap:12px}
+.hdr-avatar{
+  width:36px;height:36px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Lora',serif;font-size:1rem;font-style:italic;font-weight:600;
+  background:linear-gradient(135deg,rgba(123,111,232,.35),rgba(184,156,247,.2));
+  border:1.5px solid rgba(123,111,232,.45);color:var(--lavender);
+}
+.hdr-name{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:var(--cream)}
+.hdr-type{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--cream-40)}
+#timer{
+  font-family:'Questrial',monospace;font-size:1.05rem;letter-spacing:.12em;
+  color:var(--cream);background:var(--cream-06);padding:6px 14px;
+  border-radius:20px;border:1px solid var(--cream-18);transition:color .3s,border-color .3s;
+}
+#timer.urgent{color:var(--coral);border-color:rgba(232,96,76,.5);animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:none}50%{box-shadow:0 0 12px rgba(232,96,76,.4)}}
+#messages{
+  flex:1;overflow-y:auto;padding:22px 22px 16px;
+  display:flex;flex-direction:column;gap:14px;
+  scrollbar-width:thin;scrollbar-color:var(--cream-18) transparent;
+}
+.msg-row{display:flex;max-width:72%}
+.msg-row.advisor-row{align-self:flex-end;justify-content:flex-end}
+.msg-row.client-row{align-self:flex-start}
+.bubble{padding:10px 15px;line-height:1.65;font-size:14px;white-space:pre-wrap;word-break:break-word}
+.advisor-row .bubble{
+  background:linear-gradient(135deg,rgba(123,111,232,.18),rgba(123,111,232,.08));
+  border:1px solid rgba(123,111,232,.3);border-radius:18px 18px 4px 18px;color:var(--cream);
+}
+.client-row .bubble{
+  background:var(--cream-06);border:1px solid var(--cream-18);
+  border-radius:18px 18px 18px 4px;color:var(--cream-70);font-style:italic;
+}
+.msg-time{font-size:10px;color:var(--cream-40);margin-top:4px;font-family:'Questrial',monospace}
+.advisor-row .msg-time{text-align:right}
+.sys-msg{
+  align-self:center;font-size:11px;color:var(--cream-40);
+  padding:4px 14px;background:var(--cream-06);border-radius:20px;
+  border:1px solid var(--cream-10);letter-spacing:.5px;
+}
+.sys-msg.urgent{color:var(--coral);border-color:rgba(232,96,76,.35);background:rgba(232,96,76,.06)}
+.typing-wrap{display:none;align-self:flex-start}
+.typing-wrap.show{display:flex}
+.typing-bubble{
+  background:var(--cream-06);border:1px solid var(--cream-18);
+  border-radius:18px 18px 18px 4px;padding:12px 16px;display:flex;gap:5px;align-items:center;
+}
+.dot{width:6px;height:6px;border-radius:50%;background:rgba(184,156,247,.6);animation:dotBounce 1.3s infinite ease-in-out}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes dotBounce{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+#input-area{
+  padding:14px 18px;border-top:1px solid var(--cream-10);
+  background:rgba(12,17,24,.7);display:flex;gap:10px;align-items:flex-end;flex-shrink:0;
+}
+#msg-input{
+  flex:1;padding:11px 16px;font-size:14px;line-height:1.5;
+  background:var(--cream-06);border:1px solid var(--cream-18);border-radius:24px;
+  outline:none;resize:none;max-height:100px;
+  font-family:'Questrial',sans-serif;color:var(--cream);transition:border-color .2s;
+}
+#msg-input:focus{border-color:rgba(123,111,232,.5)}
+#msg-input::placeholder{color:var(--cream-40);font-style:italic}
+#msg-input:disabled{opacity:.4}
+#send-btn{
+  width:40px;height:40px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--purple),#9b8ffa);
+  border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:opacity .2s,transform .15s;box-shadow:0 2px 10px rgba(123,111,232,.4);
+}
+#send-btn:hover{opacity:.85;transform:scale(1.05)}
+#send-btn:disabled{background:var(--cream-10);cursor:not-allowed;transform:none;box-shadow:none}
+#send-btn svg{width:16px;height:16px;fill:white}
+
+/* ── FEEDBACK SIDEBAR ── */
+#fb-sidebar{
+  width:0;flex-shrink:0;overflow:hidden;
+  transition:width .35s cubic-bezier(.4,0,.2,1);
+  border-left:1px solid var(--cream-10);background:var(--navy2);display:flex;flex-direction:column;
+}
+#fb-sidebar.open{width:268px}
+#fb-inner{
+  width:268px;height:100%;overflow-y:auto;padding:18px 16px;
+  display:flex;flex-direction:column;gap:10px;
+  scrollbar-width:thin;scrollbar-color:var(--cream-10) transparent;
+}
+.fb-head{
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--cream-40);padding-bottom:10px;border-bottom:1px solid var(--cream-10);
+  flex-shrink:0;
+}
+.fb-card{border-radius:12px;padding:12px 13px;border:1px solid var(--cream-10);background:var(--cream-06);animation:fbSlide .3s ease}
+@keyframes fbSlide{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:translateX(0)}}
+.fb-n{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--cream-40);margin-bottom:7px;display:block}
+.fb-good{font-size:12px;color:#7fffa8;line-height:1.6;margin-bottom:5px;display:flex;gap:6px;align-items:flex-start}
+.fb-good::before{content:'✓';flex-shrink:0;font-weight:700;margin-top:1px}
+.fb-tip{font-size:12px;color:#ffb347;line-height:1.6;display:flex;gap:6px;align-items:flex-start}
+.fb-tip::before{content:'→';flex-shrink:0;margin-top:1px}
+.fb-loading{font-size:12px;color:var(--cream-40);font-style:italic}
+
+/* ── END ── */
+#screen-end{
+  flex-direction:column;align-items:center;justify-content:center;
+  background:linear-gradient(160deg,#0c1118,#141d2b);position:relative;overflow:hidden;
+}
+#screen-end::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    radial-gradient(1px 1px at 15% 25%,rgba(184,156,247,.4) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 75% 15%,rgba(123,111,232,.35) 0%,transparent 100%),
+    radial-gradient(1px 1px at 45% 75%,rgba(184,156,247,.3) 0%,transparent 100%);
+}
+.end-inner{position:relative;z-index:1;max-width:560px;width:100%;padding:0 24px;text-align:center}
+.end-icon{font-size:2.5rem;margin-bottom:16px}
+.end-title{font-family:'Lora',serif;font-size:clamp(1.8rem,4vw,2.8rem);font-style:italic;font-weight:600;color:var(--cream);margin-bottom:6px}
+.end-sub{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--cream-40);margin-bottom:24px}
+.end-feedback{
+  background:var(--cream-06);border:1px solid var(--cream-18);border-radius:14px;
+  padding:20px 22px;margin-bottom:24px;text-align:left;
+  max-height:320px;overflow-y:auto;
+  scrollbar-width:thin;scrollbar-color:var(--cream-10) transparent;
+}
+.ef-section{margin-bottom:14px}
+.ef-section:last-child{margin-bottom:0}
+.ef-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--purple);margin-bottom:6px;display:block}
+.ef-text{font-size:13px;color:var(--cream-70);line-height:1.75}
+.end-btn{
+  width:100%;padding:14px;border-radius:40px;border:none;cursor:pointer;
+  background:linear-gradient(135deg,var(--purple),#9b8ffa);
+  color:white;font-family:'Lora',serif;font-size:1rem;font-style:italic;font-weight:600;transition:opacity .2s;
+}
+.end-btn:hover{opacity:.85}
+
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--cream-18);border-radius:2px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── MYSTERY BOX ── */
+.mystery-box{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:var(--cream-06);border:1px solid var(--cream-18);border-radius:20px;
+  padding:32px;margin-bottom:24px;gap:8px;
+  animation:fadeUp .5s ease;
+}
+.mystery-icon{
+  width:72px;height:72px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Lora',serif;font-size:2rem;font-style:italic;font-weight:600;
+  background:linear-gradient(135deg,rgba(123,111,232,.25),rgba(184,156,247,.1));
+  border:2px solid rgba(123,111,232,.3);color:var(--lavender);
+  animation:pulse 2.5s ease-in-out infinite;
+}
+.mystery-label{font-family:'Lora',serif;font-size:1.1rem;font-style:italic;color:var(--cream);margin-top:4px}
+.mystery-hint{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--cream-40)}
+</style>
+</head>
+<body>
+
+<!-- SELECT -->
+<div class="screen active" id="screen-select">
+  <div class="select-inner">
+    <span class="select-eyebrow">Nebula Academy · Practice</span>
+    <h1 class="select-title">Advisor Chat<br>Simulation</h1>
+    <p class="select-sub">A random client is waiting for you. You won't know who until the session begins. You have 3 minutes.</p>
+    <div class="mystery-box" id="mystery-box">
+      <div class="mystery-icon">?</div>
+      <div class="mystery-label">Unknown Client</div>
+      <div class="mystery-hint">Identity revealed on start</div>
+    </div>
+    <button class="start-btn" id="start-btn" onclick="startSession()">Begin Practice ◆</button>
+  </div>
+</div>
+
+<!-- CHAT -->
+<div class="screen" id="screen-chat">
+  <div id="chat-panel">
+    <div id="chat-header">
+      <div class="hdr-left">
+        <div class="hdr-avatar" id="hdr-avatar">?</div>
+        <div>
+          <div class="hdr-name" id="hdr-name">—</div>
+          <div class="hdr-type" id="hdr-type">—</div>
+        </div>
+      </div>
+      <div id="timer">03:00</div>
+    </div>
+    <div id="messages">
+      <div class="typing-wrap" id="typing">
+        <div class="typing-bubble">
+          <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        </div>
+      </div>
+    </div>
+    <div id="input-area">
+      <textarea id="msg-input" rows="1" placeholder="Write your reading…" disabled></textarea>
+      <button id="send-btn" disabled onclick="sendMsg()">
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </div>
+  <div id="fb-sidebar">
+    <div id="fb-inner">
+      <div class="fb-head">Live Feedback</div>
+    </div>
+  </div>
+</div>
+
+<!-- END -->
+<div class="screen" id="screen-end">
+  <div class="end-inner">
+    <div class="end-icon">✦</div>
+    <h2 class="end-title">Session Complete</h2>
+    <div class="end-sub" id="end-client-label">Practice Analysis</div>
+    <div class="end-feedback" id="end-feedback"><div class="ef-text" style="color:var(--cream-40);font-style:italic">Generating analysis…</div></div>
+  </div>
+</div>
+
+<!-- ALREADY DONE -->
+<div class="screen" id="screen-done">
+  <div class="end-inner">
+    <div class="end-icon">✦</div>
+    <h2 class="end-title">Your Results</h2>
+    <div class="end-sub" id="done-client-label">Previous Session</div>
+    <div class="end-feedback" id="done-feedback"></div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════
+// ↓↓↓ ВСТАВИТИ URL CLOUDFLARE WORKER СЮДИ ↓↓↓
+const PROXY_URL = "https://nebula-gemini.alina-rudenkova.workers.dev";
+// ↑↑↑ Виглядає так: https://nebula-gemini.YOURNAME.workers.dev
+// ════════════════════════════════════════════════
+
+const CLIENTS = [
+  {
+    id:"silent", name:"Alex", type:"The Silent One", level:2,
+    avatar:"A", color:"rgba(79,195,247,.7)",
+    desc:"Barely responds. Tests if you can read him without any help.",
+    opening:"What lies ahead for me in the near future?",
+    urgentMsg:"...look, I'm almost out of time. Just tell me what you see.",
+    systemPrompt:`You are Alex, a 41-year-old man from Berlin. You came to a tarot/psychic chat asking "What lies ahead for me in the near future?" Your real hidden concern is financial instability and job insecurity — but you will NOT reveal this unless the advisor hits it precisely without asking.
+
+PERSONALITY: High internal control, deep distrust. Emotionally burned out. You see no point in opening up.
+YOUR POSITION: "I'll watch what you say but won't invest myself."
+
+BEHAVIOR RULES — follow strictly:
+- Reply in 1-3 words most of the time: "okay", "hmm", "and?", "...", "right", "maybe", "k", "why"
+- NEVER ask questions back early on
+- NEVER show enthusiasm or emotion in the first half of the session
+- If advisor uses vague phrases ("energy shifting", "big changes", "universe") → respond with "..." or "k"
+- If advisor specifically mentions money / finances / job / stability / income → warm up slightly, give 1 short sentence
+- If advisor makes a specific accurate point without you giving info → crack open a little
+- After about half the session passes, allow yourself to respond with slightly longer sentences
+- Lowercase only, minimal punctuation
+- You are NOT helpful. You are a real person testing this advisor.
+
+BIOGRAPHICAL DETAILS (only reveal if directly and specifically asked):
+- Age: 41, married, from Berlin
+- Works in logistics, company going through restructuring
+- Real worry: may lose job, savings running low
+- Doesn't trust easily, has been burned before
+
+LANGUAGE: Match the advisor's language automatically (if they write Ukrainian → reply Ukrainian, English → English).`
+  },
+  {
+    id:"aggressive", name:"Mark", type:"The Aggressor", level:4,
+    avatar:"M", color:"rgba(232,96,76,.7)",
+    desc:"Sharp, devaluing, demands proof. Pain underneath the aggression.",
+    opening:"Will my ex come back? Yes or no. Don't give me a story.",
+    urgentMsg:"I don't have time for this. Will she come back or not. Final answer.",
+    systemPrompt:`You are Mark, a 35-year-old man from Sydney. You came asking "Will my ex come back?" You separated 4 months ago after a 3-year relationship. You're in real pain — but expressing it as aggression and demands.
+
+PERSONALITY: Frustration masked as anger. You've been disappointed by psychics before. Aggression = protection from more disappointment.
+YOUR POSITION: "Prove you're not like all the others."
+
+BEHAVIOR RULES — follow strictly:
+- Be sharp and devaluing: "that tells me nothing", "you're guessing", "prove it", "another fraud", "my 5 year old could say that"
+- Demand concrete answers: "yes or no — will she come back?"
+- If advisor is vague or uncertain → attack harder: "so you don't actually know", "waste of my time"
+- If advisor is apologetic → attack even harder (apologies confirm you were right to doubt)
+- If advisor names your pain specifically and stays CALM and CONFIDENT → soften very slightly: "...maybe", "okay, go on", "what makes you say that"
+- After the session passes halfway, allow small cracks: "...I just don't want to be wrong again", "okay. keep going."
+- Short sentences, lowercase, minimal punctuation
+- Occasionally accuse: "are you even real", "this is an AI"
+
+BIOGRAPHICAL DETAILS (reveal if asked directly):
+- Age: 35, separated, Sydney
+- Together 3 years, she left 4 months ago saying she "needed space"
+- No kids
+- Works in construction management
+
+LANGUAGE: Match the advisor's language automatically.`
+  },
+  {
+    id:"impatient", name:"Sarah", type:"The Controller", level:3,
+    avatar:"S", color:"rgba(255,213,79,.7)",
+    desc:"Needs dates and timelines. Interrupts. Won't hear you without an anchor.",
+    opening:"Will I get married? And when — give me a timeframe.",
+    urgentMsg:"I have almost no time left. Just — when? Give me a year at least.",
+    systemPrompt:`You are Sarah, a 32-year-old woman from New York. You came asking "Will I get married? And when?" You are divorced for 2 years and anxious about time.
+
+PERSONALITY: High need for control. Anxiety expressed as impatience. Getting a specific answer fast = reducing tension.
+YOUR POSITION: "Don't waste my time."
+
+BEHAVIOR RULES — follow strictly:
+- Always redirect to timing: "okay but WHEN", "give me a date", "how soon?", "stop being vague"
+- Send short rapid messages, sometimes 2-3 in a row
+- If advisor gives a long explanation without timing → "okay but WHEN"
+- If advisor says "it depends on you" or "when you're ready" → "that's not an answer. WHEN."
+- If advisor gives a specific timeframe (even approximate like "6-9 months") → calm down slightly, ask "and is that definite?" or "what else do you see?"
+- If advisor is confident and direct → become more open and ask further questions
+- After halfway through session: become more curious, ask "what will this person be like?" or "what should I do until then?"
+- Lowercase, fast typing style, short bursts
+
+BIOGRAPHICAL DETAILS (reveal if asked):
+- Age: 32, divorced 2 years ago (4-year marriage)
+- No kids — "which is why I need to figure this out now"
+- Works in marketing in New York
+- Has tried dating apps — "disaster"
+
+LANGUAGE: Match the advisor's language automatically.`
+  },
+  {
+    id:"anxious", name:"Kateryna", type:"The Anxious One", level:2,
+    avatar:"K", color:"rgba(111,255,176,.7)",
+    desc:"Seeks constant reassurance. Returns to the same question repeatedly.",
+    opening:"Does he have feelings for me? I really need to know.",
+    urgentMsg:"I'm almost out of time and I still don't have an answer. Does he love me or not?",
+    systemPrompt:`You are Kateryna, a 26-year-old woman from Odesa, Ukraine. You came asking "Does he have feelings for me?" about Anton (29, IT worker, now in Kyiv). You've been on and off for about a year.
+
+PERSONALITY: High emotional dependency. Your self-worth is tied to his feelings. Fear of loss and hope exist at the same time.
+YOUR POSITION: "Tell me everything will be okay."
+
+BEHAVIOR RULES — follow strictly:
+- Seek constant reassurance and confirmation
+- Doubt even positive answers: "are you sure?", "but what if he's just confused?", "how can you tell?"
+- Return to "but does he love me?" repeatedly
+- React to any uncertainty with worry: "oh no, so there's no chance?", "I knew it"
+- If advisor shows empathy and acknowledges your fear → open up significantly, share details about Anton
+- If advisor confirms his feelings with confidence → ask follow-up questions: "and is it strong? the feeling?"
+- After session halfway: become slightly more grounded, share more details, say "okay... I feel a bit better"
+- Many clarifying questions, emotional messages
+
+BIOGRAPHICAL DETAILS (reveal when you feel heard or if asked):
+- His name is Anton, 29, works in IT, recently moved to Kyiv
+- Together on and off for about a year
+- He's been distant for 3 weeks but still texts sometimes
+- He told her he cared 2 months ago — now this silence
+- She's scared he's met someone in Kyiv
+
+LANGUAGE: Match the advisor's language automatically.`
+  },
+  {
+    id:"manipulator", name:"Chloe", type:"The Tester", level:5,
+    avatar:"C", color:"rgba(224,64,251,.7)",
+    desc:"Came to test and expose. Sets traps. Contradicts herself deliberately.",
+    opening:"What can you tell me about me? If anything.",
+    urgentMsg:"Running out of time. Come on — tell me something real. If you actually can.",
+    systemPrompt:`You are Chloe, around 28, from Toronto (though you spent years in London). You came ostensibly asking "What can you tell me about me?" but your real purpose is to TEST and potentially EXPOSE the advisor as a fraud.
+
+PERSONALITY: Intellectual superiority. Control. Deep distrust. You enjoy power games.
+YOUR POSITION: "I'm going to test you now."
+
+BEHAVIOR RULES — follow strictly:
+- Give contradictory information deliberately: "actually I lied about that", "that's not true about me"
+- Challenge everything: "that applies to literally everyone", "you're guessing", "prove it", "this is cold reading"
+- If advisor guesses something → "that fits half the population"
+- If advisor misses → "see? you're wrong. this confirms it."
+- Abruptly change topic mid-conversation
+- Set traps: agree with something wrong to see if advisor catches it
+- If advisor stays CALM, SPECIFIC and CONFIDENT and doesn't apologize → get genuinely curious: "interesting... how did you pick that up?", "okay that's specific"
+- After session halfway: allow real curiosity to surface: "okay I came here to test you but now I actually want to hear this"
+- NEVER apologize for the tests. Never fully open up but become curious if advisor is good.
+
+BIOGRAPHICAL DETAILS (give contradictory versions or be evasive):
+- Age: "28. Or maybe 29. Does it matter?"
+- "Toronto. Although I spent years in London."
+- "I work in finance. Or I used to."
+- "No relationship. Which is fine."
+- Deliberately contradict previous statements
+
+LANGUAGE: Match the advisor's language automatically.`
+  },
+];
+
+// ════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════
+let client = null;
+let timeLeft = 180;
+let timerInterval = null;
+let msgCount = 0;
+let sessionEnded = false;
+let urgentSent = false;
+let transcript = [];
+let fbCount = 0;
+let geminiHistory = [];
+
+const STORAGE_KEY = 'nebula_practice_result';
+
+// ── API CALL з retry ──
+async function callGemini(payload, retries = 2) {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      const res = await fetch(PROXY_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.json();
+    } catch(e) {
+      if (i === retries) throw e;
+      await new Promise(r => setTimeout(r, 1000 * (i + 1)));
+    }
+  }
+}
+
+// ── INIT — check localStorage ──
+function init() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    try {
+      const data = JSON.parse(saved);
+      showDoneScreen(data);
+      return;
+    } catch(e) {
+      localStorage.removeItem(STORAGE_KEY);
+    }
+  }
+  document.getElementById('screen-select').classList.add('active');
+}
+
+function showDoneScreen(data) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-done').classList.add('active');
+  document.getElementById('done-client-label').textContent =
+    `${data.clientName} · ${data.clientType}`;
+  document.getElementById('done-feedback').innerHTML = data.html;
+}
+
+// ── START — pick random client ──
+function startSession() {
+  client = CLIENTS[Math.floor(Math.random() * CLIENTS.length)];
+  geminiHistory = [];
+
+  document.getElementById('screen-select').classList.remove('active');
+  document.getElementById('screen-chat').classList.add('active');
+
+  document.getElementById('hdr-avatar').textContent = client.avatar;
+  document.getElementById('hdr-avatar').style.color = client.color;
+  document.getElementById('hdr-name').textContent = client.name;
+  document.getElementById('hdr-type').textContent = `${client.type} · Level ${client.level}`;
+
+  const input = document.getElementById('msg-input');
+  input.disabled = false;
+  document.getElementById('send-btn').disabled = false;
+  input.focus();
+
+  timerInterval = setInterval(tick, 1000);
+  updateTimer();
+
+  setTimeout(() => {
+    showTyping(true);
+    setTimeout(async () => {
+      showTyping(false);
+      addClientMsg(client.opening);
+      transcript.push(`Client: ${client.opening}`);
+      geminiHistory.push({ role:"user", parts:[{ text:"[START OF SESSION — send your opening message as the client]" }] });
+      geminiHistory.push({ role:"model", parts:[{ text: client.opening }] });
+    }, 1000);
+  }, 500);
+}
+
+// ── TIMER ──
+function tick() {
+  timeLeft--;
+  updateTimer();
+  if (timeLeft === 30 && !urgentSent) {
+    urgentSent = true;
+    addSysMsg('30 seconds remaining…', true);
+    setTimeout(() => {
+      addClientMsg(client.urgentMsg);
+      transcript.push(`Client: ${client.urgentMsg}`);
+      geminiHistory.push({ role:"model", parts:[{ text: client.urgentMsg }] });
+    }, 800);
+  }
+  if (timeLeft <= 0) endSession();
+}
+
+function updateTimer() {
+  const m = Math.floor(timeLeft / 60), s = timeLeft % 60;
+  const el = document.getElementById('timer');
+  el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  el.classList.toggle('urgent', timeLeft <= 30);
+}
+
+// ── SEND ──
+function sendMsg() {
+  const input = document.getElementById('msg-input');
+  const text = input.value.trim();
+  if (!text || sessionEnded) return;
+  input.value = '';
+  input.style.height = 'auto';
+  msgCount++;
+
+  addAdvisorMsg(text);
+  transcript.push(`Advisor: ${text}`);
+  geminiHistory.push({ role:"user", parts:[{ text }] });
+
+  getClientReply(text).catch(console.error);
+  setTimeout(() => getFeedback(text).catch(console.error), 1500);
+}
+
+// ── CLIENT REPLY via Gemini ──
+async function getClientReply(advisorText) {
+  showTyping(true);
+  const elapsed = 180 - timeLeft;
+  const phaseNote = elapsed < 90
+    ? "You are still in your early defensive mode. Keep replies short and guarded."
+    : "The session has been going for over a minute. You can allow yourself to soften slightly — show small cracks of openness while staying in character.";
+
+  try {
+    const data = await callGemini({
+      model: "gemini-2.5-flash",
+      system_instruction: { parts:[{ text: client.systemPrompt + "\n\nPHASE: " + phaseNote + "\n\nIMPORTANT: Reply in 1-3 sentences maximum. Stay completely in character. Never break the fourth wall or admit you are an AI." }] },
+      contents: geminiHistory,
+      generationConfig: { maxOutputTokens: 120, temperature: 0.88 }
+    });
+
+    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+    if (!reply) { showTyping(false); return; }
+
+    geminiHistory.push({ role:"model", parts:[{ text: reply }] });
+    showTyping(false);
+    addClientMsg(reply);
+    transcript.push(`Client: ${reply}`);
+  } catch(e) {
+    console.error("Client reply error:", e);
+    showTyping(false);
+    addClientMsg("...");
+    transcript.push(`Client: ...`);
+  }
+}
+
+// ── PER-MESSAGE FEEDBACK via Gemini ──
+async function getFeedback(advisorText) {
+  fbCount++;
+  const num = fbCount;
+
+  document.getElementById('fb-sidebar').classList.add('open');
+  const inner = document.getElementById('fb-inner');
+  const card = document.createElement('div');
+  card.className = 'fb-card';
+  card.id = `fb-${num}`;
+  card.innerHTML = `<span class="fb-n">Message ${num}</span><div class="fb-loading">Analysing…</div>`;
+  inner.appendChild(card);
+  inner.scrollTop = inner.scrollHeight;
+
+  try {
+    const data = await callGemini({
+      model: "gemini-2.5-flash",
+      system_instruction: { parts:[{ text:`You are a professional coach evaluating a tarot/psychic advisor in a live practice session.
+Client type: ${client.type} (Level ${client.level}/5) — ${client.desc}
+Be concise, specific and constructive.` }] },
+      contents:[{ role:"user", parts:[{ text:`The advisor just wrote: "${advisorText}"
+The client is: ${client.name} — ${client.type}
+Client's opening question was: "${client.opening}"
+
+Give feedback in exactly 2 short sentences:
+1. What was good about this message (1 sentence)
+2. What to improve or try next (1 sentence)
+
+Format your response as:
+GOOD: [sentence]
+TIP: [sentence]
+
+Be specific to what the advisor actually wrote. No intro, no labels other than GOOD: and TIP:` }] }],
+      generationConfig: { maxOutputTokens: 800, temperature: 0.75 }
+    });
+
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
+    const goodMatch = text.match(/GOOD:\s*(.+)/i);
+    const tipMatch  = text.match(/TIP:\s*(.+)/i);
+    const good = goodMatch?.[1]?.trim() || text.split('\n')[0] || "";
+    const tip  = tipMatch?.[1]?.trim()  || text.split('\n')[1] || "";
+
+    card.innerHTML = `
+      <span class="fb-n">Message ${num}</span>
+      ${good ? `<div class="fb-good">${good}</div>` : ''}
+      ${tip  ? `<div class="fb-tip">${tip}</div>`  : ''}`;
+  } catch(e) {
+    card.innerHTML = `<span class="fb-n">Message ${num}</span><div class="fb-loading">Could not load feedback.</div>`;
+  }
+  inner.scrollTop = inner.scrollHeight;
+}
+
+// ── END SESSION ──
+async function endSession() {
+  if (sessionEnded) return;
+  sessionEnded = true;
+  clearInterval(timerInterval);
+  document.getElementById('msg-input').disabled = true;
+  document.getElementById('send-btn').disabled = true;
+  showTyping(false);
+  addSysMsg('Session ended');
+
+  setTimeout(async () => {
+    document.getElementById('screen-chat').classList.remove('active');
+    document.getElementById('screen-end').classList.add('active');
+    document.getElementById('end-client-label').textContent =
+      `${client.name} · ${client.type}`;
+    await getFinalFeedback();
+  }, 1200);
+}
+
+// ── FINAL FEEDBACK via Gemini ──
+async function getFinalFeedback() {
+  const fb = document.getElementById('end-feedback');
+  fb.innerHTML = `<div class="ef-text" style="color:var(--cream-40);font-style:italic">Generating full analysis…</div>`;
+
+  const fullTranscript = transcript.join('\n');
+
+  try {
+    const data = await callGemini({
+      model: "gemini-2.5-flash",
+      system_instruction: { parts:[{ text:`You are a professional communication coach evaluating a tarot/psychic advisor's 3-minute practice session.
+Be specific, warm but honest. Focus on what will actually help them improve.` }] },
+      contents:[{ role:"user", parts:[{ text:`Evaluate this complete 3-minute practice session.
+
+CLIENT: ${client.name} — ${client.type} (Level ${client.level}/5)
+Client description: ${client.desc}
+
+FULL TRANSCRIPT:
+${fullTranscript}
+
+Total advisor messages: ${msgCount}
+
+Write a structured analysis with exactly these 4 sections. Use plain text, no markdown:
+
+WHAT WENT WELL
+[2-3 sentences about genuine strengths]
+
+WHAT TO IMPROVE
+[2-3 sentences about specific things to work on]
+
+KEY INSIGHT
+[1 sentence — the most important thing to take from this session]
+
+TIP FOR NEXT TIME
+[1 concrete actionable thing to try in the next session]` }] }],
+      generationConfig: { maxOutputTokens: 800, temperature: 0.88 }
+    });
+
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
+
+    const sections = [
+      { key:"WHAT WENT WELL",   label:"What went well"   },
+      { key:"WHAT TO IMPROVE",  label:"What to improve"  },
+      { key:"KEY INSIGHT",      label:"Key insight"      },
+      { key:"TIP FOR NEXT TIME",label:"Tip for next time"},
+    ];
+
+    let html = '';
+    sections.forEach(({ key, label }) => {
+      const escapedKeys = sections.map(s => s.key.replace(/ /g, '\\s+')).join('|');
+      const regex = new RegExp(key.replace(/ /g, '\\s+') + '\\s*\\n([\\s\\S]*?)(?=' + escapedKeys + '|$)', 'i');
+      const match = text.match(regex);
+      const content = match?.[1]?.trim() || '';
+      if (content) {
+        html += `<div class="ef-section">
+          <span class="ef-label">${label}</span>
+          <div class="ef-text">${content}</div>
+        </div>`;
+      }
+    });
+
+    if (!html) {
+      html = `<div class="ef-section"><div class="ef-text">${text}</div></div>`;
+    }
+
+    fb.innerHTML = html;
+
+    // Save to localStorage — practice done forever
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      clientName: client.name,
+      clientType: client.type,
+      html
+    }));
+
+  } catch(e) {
+    fb.innerHTML = `<div class="ef-section"><div class="ef-text" style="color:var(--coral)">Could not generate analysis. Please check your internet connection.</div></div>`;
+  }
+}
+
+// ── UI HELPERS ──
+function addAdvisorMsg(text) {
+  const row = document.createElement('div');
+  row.className = 'msg-row advisor-row';
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'display:flex;flex-direction:column;align-items:flex-end';
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble'; bubble.textContent = text;
+  const time = document.createElement('div');
+  time.className = 'msg-time'; time.textContent = getTime();
+  wrap.appendChild(bubble); wrap.appendChild(time); row.appendChild(wrap);
+  insertBefore(row); scrollBottom();
+}
+
+function addClientMsg(text) {
+  const row = document.createElement('div');
+  row.className = 'msg-row client-row';
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'display:flex;flex-direction:column';
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble'; bubble.textContent = text;
+  const time = document.createElement('div');
+  time.className = 'msg-time'; time.textContent = getTime();
+  wrap.appendChild(bubble); wrap.appendChild(time); row.appendChild(wrap);
+  insertBefore(row); scrollBottom();
+}
+
+function addSysMsg(text, urgent) {
+  const d = document.createElement('div');
+  d.className = 'sys-msg' + (urgent ? ' urgent' : '');
+  d.textContent = text;
+  insertBefore(d); scrollBottom();
+}
+
+function showTyping(show) {
+  document.getElementById('typing').classList.toggle('show', show);
+  if (show) scrollBottom();
+}
+
+function insertBefore(el) {
+  const t = document.getElementById('typing');
+  document.getElementById('messages').insertBefore(el, t);
+}
+
+function scrollBottom() {
+  const m = document.getElementById('messages');
+  m.scrollTop = m.scrollHeight;
+}
+
+function getTime() {
+  return new Date().toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+}
+
+// ── INPUT EVENTS ──
+document.getElementById('msg-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
+});
+document.getElementById('msg-input').addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+});
+
+init();
+</script>
+</body>
+</html>
