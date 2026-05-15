@@ -364,7 +364,7 @@ html,body{height:100%;background:var(--bg);font-family:Inter,system-ui,sans-seri
 
 <script>
 // ─── ЗМІНИ ТУТ: вкажи свій Apps Script URL ───────────────────────────────────
-const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwj4V_3-rhRyalyrc5W5HND4OM1oDuO3REl9p-LBH0lYpzyh8pQaTT06mtvDPs6kjQS/exec';
+const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbw3sm2wquQ589w_OPiR9vBTRpbkWA7t67uKNjyH-Cap36htY3c4vcHGSsq76FL_uKAd/exec';
 // ─────────────────────────────────────────────────────────────────────────────
 
 const PROXY_URL = 'https://nebula-gemini.alina-rudenkova.workers.dev';
@@ -809,7 +809,7 @@ async function sendToSheets(total, feedbackText, scores, responseSeconds){
   };
 
   try{
-    await fetch(WEBHOOK_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    await fetch(WEBHOOK_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)});
     dotEl.className='sheets-dot ok';
     msgEl.textContent='Results saved to Google Sheets ✓';
   }catch(e){
