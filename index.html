@@ -50,7 +50,7 @@ html,body{height:100%;background:var(--bg);font-family:Inter,system-ui,sans-seri
 .primary-btn:hover{opacity:.88;transform:translateY(-1px)}
 .primary-btn:disabled{opacity:.22;cursor:not-allowed;transform:none}
 
-/* SELECT — 3 practice levels */
+/* SELECT */
 #screen-select{flex-direction:column;align-items:center;justify-content:center;padding:24px;background:var(--bg)}
 .select-wrap{position:relative;z-index:1;width:100%;max-width:700px;animation:fadeUp .5s ease both}
 .select-eyebrow{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--purple);margin-bottom:10px;display:block}
@@ -58,7 +58,6 @@ html,body{height:100%;background:var(--bg);font-family:Inter,system-ui,sans-seri
 .select-sub{font-size:13px;color:var(--g6);margin-bottom:6px;max-width:520px;line-height:1.7}
 .advisor-chip{display:inline-flex;align-items:center;gap:8px;margin-bottom:24px;padding:6px 14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:30px;font-size:12px;color:var(--g6)}
 .advisor-chip strong{color:var(--purple);font-weight:500}
-
 .level-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px}
 @media(max-width:540px){.level-grid{grid-template-columns:1fr}}
 .level-card{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:26px 18px 22px;cursor:pointer;transition:all .22s;text-align:center;position:relative;overflow:hidden}
@@ -77,12 +76,10 @@ html,body{height:100%;background:var(--bg);font-family:Inter,system-ui,sans-seri
 .lc-desc{font-size:11px;color:var(--g6);line-height:1.6;margin-bottom:10px}
 .lc-clients{font-size:10px;color:var(--g4);letter-spacing:.5px}
 
-/* READY — Variant A: light card */
+/* READY */
 #screen-ready{flex-direction:column;align-items:center;justify-content:center;padding:24px;background:var(--bg);overflow-y:auto}
 .ready-wrap{position:relative;z-index:1;width:100%;max-width:420px;animation:fadeUp .4s ease both;padding:8px 0}
 .ready-eyebrow{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--g6);margin-bottom:14px;text-align:center}
-
-/* white card with purple border */
 .ready-card{background:#fff;border-radius:16px;border:2px solid var(--p400);padding:24px 22px}
 .ready-avatar-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:16px}
 .ready-avatar-ring{width:72px;height:72px;border-radius:50%;border:2px solid var(--p400);background:var(--p50);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:2rem;font-weight:400;color:var(--p600);margin-bottom:12px;position:relative}
@@ -90,21 +87,16 @@ html,body{height:100%;background:var(--bg);font-family:Inter,system-ui,sans-seri
 @keyframes pulseRing{0%,100%{transform:scale(1);opacity:.25}50%{transform:scale(1.07);opacity:.1}}
 .ready-name{font-family:Georgia,serif;font-size:1.7rem;font-weight:400;color:#111827;margin-bottom:8px}
 .ready-level-badge{background:var(--p50);color:var(--p600);border:1px solid var(--p200);font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:4px 14px;border-radius:20px}
-
-/* client background card inside white card */
 .cbc{border:1.5px solid var(--p400);border-radius:12px;padding:14px;margin-bottom:12px;background:var(--p50)}
 .cbc-title{font-size:12px;font-weight:600;color:var(--p800);margin-bottom:10px}
 .cbc-row{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:0.5px solid var(--p200)}
 .cbc-row:last-child{border-bottom:none}
 .cbc-label{font-size:12px;color:var(--p600)}
 .cbc-value{font-size:12px;font-weight:500;color:var(--p800);text-align:right;max-width:58%}
-
-/* opening message block */
 .fmp{background:#F9FAFB;border:0.5px solid #E5E7EB;border-radius:10px;padding:12px;margin-bottom:14px}
 .fmp-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#9CA3AF;margin-bottom:6px}
 .fmp-text{font-size:13px;color:#111827;font-style:italic;line-height:1.6;margin-bottom:4px}
 .fmp-meta{font-size:10px;color:#9CA3AF}
-
 .ready-note{font-size:11px;color:var(--p600);text-align:center;line-height:1.6;margin-bottom:16px}
 .ready-btn{width:100%;padding:13px;border:none;border-radius:40px;background:linear-gradient(135deg,var(--p400),#9b8ffa);color:#fff;font-family:Georgia,serif;font-size:1rem;font-style:italic;cursor:pointer;transition:opacity .2s,transform .15s;box-shadow:0 4px 16px rgba(127,119,221,.4)}
 .ready-btn:hover{opacity:.88;transform:translateY(-1px)}
@@ -161,7 +153,6 @@ html,body{height:100%;background:var(--bg);font-family:Inter,system-ui,sans-seri
 .cp-field{margin-bottom:12px}
 .cp-field-label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#9CA3AF;margin-bottom:3px}
 .cp-field-value{font-size:13px;color:#374151;font-weight:500}
-.cp-status-pill{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:4px 10px;border-radius:20px;border:1px solid}
 
 /* END */
 #screen-end{flex-direction:column;align-items:center;justify-content:flex-start;padding:40px 24px;overflow-y:auto;background:var(--bg)}
@@ -328,12 +319,6 @@ html,body{height:100%;background:var(--bg);font-family:Inter,system-ui,sans-seri
       <div class="cp-tab active">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
       </div>
-      <div class="cp-tab">
-        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      </div>
-      <div class="cp-tab">
-        <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-      </div>
     </div>
     <div class="cp-body">
       <div class="cp-title">Client Details</div>
@@ -378,8 +363,11 @@ html,body{height:100%;background:var(--bg);font-family:Inter,system-ui,sans-seri
 </div>
 
 <script>
-const PROXY_URL   = 'https://nebula-gemini.alina-rudenkova.workers.dev';
-const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbw3sm2wquQ589w_OPiR9vBTRpbkWA7t67uKNjyH-Cap36htY3c4vcHGSsq76FL_uKAd/exec';
+// ─── ЗМІНИ ТУТ: вкажи свій Apps Script URL ───────────────────────────────────
+const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbzAPSkH42v6epbSzjZs8S1rwmEk-Emc4_9QFBrPxs40W-BAYh8Nt9hMLA3u2h-MAqtt/exec';
+// ─────────────────────────────────────────────────────────────────────────────
+
+const PROXY_URL = 'https://nebula-gemini.alina-rudenkova.workers.dev';
 
 const LEVEL_MAP = {
   light:   [0, 3],
@@ -532,23 +520,18 @@ function startReveal(){
   if(!selectedLevel) return;
   const pool=LEVEL_MAP[selectedLevel];
   client=CLIENTS[pool[Math.floor(Math.random()*pool.length)]];
-
-  // avatar — neutral purple style for all
   const ring=document.getElementById('ready-avatar-ring');
   ring.style.color=client.avatarColor;
   ring.style.borderColor='#7F77DD';
   ring.style.background='#EEEDFE';
   document.getElementById('ready-avatar-letter').textContent=client.avatar;
   document.getElementById('ready-name').textContent=client.name;
-
   const badge=document.getElementById('ready-level-badge');
   badge.textContent=client.levelLabel;
-
   document.getElementById('bg-knowledge').textContent=client.background.knowledge;
   document.getElementById('bg-emotion').textContent=client.background.emotion;
   document.getElementById('fmp-text').textContent='"'+client.opening+'"';
   document.getElementById('fmp-meta').textContent=client.name+' · opening message';
-
   switchScreen('screen-select','screen-ready');
 }
 
@@ -556,21 +539,16 @@ function startSession(){
   geminiHistory=[];transcript=[];
   msgCount=0;timeLeft=180;sessionEnded=false;urgentSent=false;lastMsgAllowed=false;
   firstClientMsgTime=null;firstAdvisorMsgTime=null;
-
   const msgs=document.getElementById('messages');
   const typing=document.getElementById('typing');
   while(msgs.firstChild&&msgs.firstChild!==typing) msgs.removeChild(msgs.firstChild);
-
-  // neutral avatar in chat topbar
   const av=document.getElementById('client-avatar');
   av.textContent=client.avatar;
   av.style.color='#534AB7';
   av.style.background='#EEEDFE';
   av.style.borderColor='#AFA9EC';
-
   document.getElementById('topbar-name').textContent=client.name;
   document.getElementById('topbar-sub').textContent=client.levelLabel+' · '+client.desc.split('.')[0];
-
   document.getElementById('cp-last-activity').textContent=client.details.lastActivity;
   document.getElementById('cp-dob').textContent=client.details.dob;
   document.getElementById('cp-tob').textContent=client.details.tob;
@@ -578,7 +556,6 @@ function startSession(){
   document.getElementById('cp-sign').textContent=client.details.sign;
   document.getElementById('cp-gender').textContent=client.details.gender;
   document.getElementById('cp-status').textContent=client.details.status;
-
   const input=document.getElementById('msg-input');
   input.value='';input.style.height='auto';input.disabled=false;
   document.getElementById('send-btn').disabled=false;
@@ -586,7 +563,6 @@ function startSession(){
   input.focus();
   updateTimer();
   timerInterval=setInterval(tick,1000);
-
   setTimeout(()=>{
     showTyping(true);
     setTimeout(()=>{
@@ -684,7 +660,6 @@ async function finishSession(){
 async function getFinalFeedback(){
   const fb=document.getElementById('end-feedback');
   fb.innerHTML='<div class="ef-text" style="color:var(--g6);font-style:italic">Generating your results…</div>';
-
   const responseSeconds=(firstClientMsgTime&&firstAdvisorMsgTime)
     ?Math.round((firstAdvisorMsgTime-firstClientMsgTime)/1000):null;
   const speedScore=responseSeconds===null?10:responseSeconds<=7?20:responseSeconds<=12?14:responseSeconds<=20?8:3;
@@ -788,33 +763,51 @@ COMMENT:${'{'}1 sentence addressed directly to the advisor using "you" — the s
       </div>`;
     }
     fb.innerHTML=html;
-    await sendToSheets(total,raw,{tarot:tarot.score,empathy:empathy.score,speed:speed.score,engage:engage.score,intrigue:intrigue.score},responseSeconds);
+
+    // ── ВІДПРАВКА В SHEETS ────────────────────────────────────────────────────
+    await sendToSheets(total, raw, {
+      tarot:    tarot.score,
+      empathy:  empathy.score,
+      speed:    speed.score,
+      engage:   engage.score,
+      intrigue: intrigue.score
+    }, responseSeconds);
+
   }catch(e){
     console.error(e);
     fb.innerHTML='<div class="ef-section"><div class="ef-text" style="color:var(--coral)">Could not generate analysis. Please check your connection.</div></div>';
   }
 }
 
-async function sendToSheets(total,feedbackText,scores,responseSeconds){
+async function sendToSheets(total, feedbackText, scores, responseSeconds){
   if(!WEBHOOK_URL) return;
   const statusEl=document.getElementById('sheets-status');
   const dotEl=document.getElementById('sheets-dot');
   const msgEl=document.getElementById('sheets-msg');
   statusEl.style.display='flex';
+
   const payload={
-    practiceName: "AI Trial Chat Simulation",
-    timestamp:new Date().toISOString(),
-    advisorName,advisorEmail,
-    clientId:client.id,clientName:client.name,
-    practiceLevel:client.levelLabel,
-    totalScore:total,
-    scoreTarot:scores.tarot,scoreEmpathy:scores.empathy,
-    scoreSpeed:scores.speed,scoreEngagement:scores.engage,scoreIntrigue:scores.intrigue,
-    firstResponseSec:responseSeconds,
+    sheetTarget:      'trial',                        // ← роутинг на Trial Results
+    practiceName:     'AI Trial Chat Simulation',
+    timestamp:        new Date().toISOString(),
+    advisorName,
+    advisorEmail,
+    clientId:         client.id,
+    clientName:       client.name,
+    clientType:       client.levelLabel,
+    difficulty:       client.levelLabel,
+    totalScore:       total,
+    scoreTarot:       scores.tarot,
+    scoreEmpathy:     scores.empathy,
+    scoreSpeed:       scores.speed,
+    scoreEngagement:  scores.engage,
+    scoreIntrigue:    scores.intrigue,
+    firstResponseSec: responseSeconds,
     msgCount,
-    feedback:feedbackText,
-    transcript:transcript.join('\n'),
+    feedback:         feedbackText,
+    transcript:       transcript.join('\n'),
   };
+
   try{
     await fetch(WEBHOOK_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     dotEl.className='sheets-dot ok';
